@@ -1,36 +1,73 @@
 
 public class TennisGame3 implements TennisGame {
     
-    private int p2;
-    private int p1;
-    private String p1N;
-    private String p2N;
+    private int player2Point;
+    private int player1Point;
+    private String player1Score;
+    private String player2Score;
 
-    public TennisGame3(String p1N, String p2N) {
-        this.p1N = p1N;
-        this.p2N = p2N;
+    public TennisGame3(String player1Score, String player2Score) {
+        this.player1Score = player1Score;
+        this.player2Score = player2Score;
     }
 
     public String getScore() {
-        String s;
-        if (p1 < 4 && p2 < 4 && !(p1 + p2 == 6)) {
-            String[] p = new String[]{"Love", "Fifteen", "Thirty", "Forty"}; 
-            s = p[p1];
-            return (p1 == p2) ? s + "-All" : s + "-" + p[p2];
+        String score;
+        if (validatePointOfPlayers()) {
+            String[] scores = new String[]{"Love", "Fifteen", "Thirty", "Forty"};
+            score = scoreBoard(scores);
         } else {
-            if (p1 == p2)
+            if (player1Point == player2Point)
                 return "Deuce";
-            s = p1 > p2 ? p1N : p2N;
-            return ((p1-p2)*(p1-p2) == 1) ? "Advantage " + s : "Win for " + s;
+            score = playersDiff();
         }
+        return score;
     }
-    
+
     public void wonPoint(String playerName) {
         if (playerName == "player1")
-            this.p1 += 1;
+            player1Point += 1;
         else
-            this.p2 += 1;
-        
+            player2Point += 1;
+
     }
+
+    //PRIVATE METHODS
+
+    private  boolean validatePointOfPlayers(){
+        boolean validate = true;
+        if (validateScoreBoard()) validate = true;
+        else validate = false;
+        return validate;
+    }
+
+    private boolean validateScoreBoard(){
+       return  player1Point < 4 && player2Point < 4 && !((player1Point + player2Point) == 6);
+    }
+
+    private String scoreBoard(String[] scores){
+        String score = "";
+        score = scores[player1Point];
+        score = (player1Point == player2Point) ? score + "-All" : score + "-" + scores[player2Point];
+        return score;
+    }
+
+    private String playersDiff(){
+        String score = "";
+        int subtractPoint = (player1Point - player2Point) * (player1Point - player2Point);
+        score = player1Point > player2Point ? player1Score : player2Score;
+        score = partialScoreBoard(score, subtractPoint);
+        return score;
+    }
+
+    private String partialScoreBoard(String score, int totalPoints){
+        String partialScore = "";
+        if (totalPoints == 1)
+            partialScore = "Advantage " + score;
+        else partialScore = "Win for " + score;
+        return partialScore;
+    }
+
+
 
 }
